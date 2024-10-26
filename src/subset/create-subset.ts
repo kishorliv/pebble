@@ -15,6 +15,7 @@ export async function createSubset(
 		throw new Error('No tables found!');
 	}
 
+	// start traversing using the seed tables
 	for (const seedTable of config.seedTables) {
 		const { name } = seedTable;
 
@@ -38,6 +39,7 @@ export async function createSubset(
 		await fetchRelatedDataRecursively(name, result, data.rows, sourceDb);
 	}
 
+	// subset tables without relationships
 	const standaloneTables = allTables.filter((table) => !(table in result));
 
 	for (const table of standaloneTables) {
