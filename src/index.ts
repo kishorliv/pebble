@@ -7,10 +7,10 @@ import { createSubset } from './subset/create-subset';
 async function main() {
 	try {
 		const config: SubsetConfig = {
-			schemaDumpFile: 'database_schema.sql',
+			schemaDumpFile: '.temp/database_schema.sql',
 			connectionString: {
 				sourceDb: 'postgresql://localhost:5432/dvdrental',
-				destinationDb: 'postgresql://localhost:5432/test_db',
+				targetDb: 'postgresql://localhost:5432/test_db',
 			},
 			seedTables: [{ name: 'actor' }],
 			percent: 5,
@@ -18,7 +18,11 @@ async function main() {
 
 		const sourceDb = createDbInstance(config.connectionString.sourceDb);
 
-		await createTablesWithSchema(config.connectionString.sourceDb, config.schemaDumpFile);
+		await createTablesWithSchema(
+			config.connectionString.sourceDb,
+			config.connectionString.targetDb,
+			config.schemaDumpFile
+		);
 
 		const subset = await createSubset(config, sourceDb);
 

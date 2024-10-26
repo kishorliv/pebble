@@ -1,7 +1,14 @@
 import { exec } from 'child_process';
 import fs from 'fs';
+import util from 'util';
 
-export async function createTablesWithSchema(sourceDbUrl: string, dumpFilePath: string) {
+const execPromise = util.promisify(exec);
+
+export async function createTablesWithSchema(
+	sourceDbUrl: string,
+	targetDbUrl: string,
+	dumpFilePath: string
+) {
 	if (fs.existsSync(dumpFilePath)) {
 		console.log(
 			`Dump file "${dumpFilePath}" already exists. Skipping creation of the new dump file...`
@@ -10,7 +17,7 @@ export async function createTablesWithSchema(sourceDbUrl: string, dumpFilePath: 
 		await dumpSchema(sourceDbUrl, dumpFilePath);
 	}
 
-	await restoreSchema(sourceDbUrl, dumpFilePath);
+	await restoreSchema(targetDbUrl, dumpFilePath);
 }
 
 async function dumpSchema(sourceDbUrl: string, outputFilePath: string) {
@@ -18,19 +25,12 @@ async function dumpSchema(sourceDbUrl: string, outputFilePath: string) {
 
 	console.log('Dumping the schema...');
 
-	exec(command, (error, _stdout, stderr) => {
-		if (error) {
-			console.error(`Error dumping schema: ${error.message}`);
-			return;
-		}
-
-		if (stderr) {
-			console.error(`Error: ${stderr}`);
-			return;
-		}
-
+	try {
+		await execPromise(command);
 		console.log(`Schema dumped successfully to ${outputFilePath}`);
-	});
+	} catch (error) {
+		console.error(`Error dumping schema: ${(error as Error).message}`);
+	}
 }
 
 async function restoreSchema(targetDbUrl: string, inputFilePath: string) {
@@ -38,17 +38,10 @@ async function restoreSchema(targetDbUrl: string, inputFilePath: string) {
 
 	console.log('Restoring the schema...');
 
-	exec(command, (error, _stdout, stderr) => {
-		if (error) {
-			console.error(`Error restoring schema: ${error.message}`);
-			return;
-		}
-
-		if (stderr) {
-			console.error(`Error: ${stderr}`);
-			return;
-		}
-
+	try {
+		await execPromise(command);
 		console.log(`Schema restored successfully to ${targetDbUrl}`);
-	});
+	} catch (error) {
+		console.error(`Error restoring schema: ${(error as Error).message}`);
+	}
 }

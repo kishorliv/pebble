@@ -2,7 +2,7 @@ export interface SubsetConfig {
 	schemaDumpFile: string;
 	connectionString: {
 		sourceDb: string;
-		destinationDb: string;
+		targetDb: string;
 	};
 	seedTables: SeedTable[];
 	percent: number;
