@@ -1,5 +1,5 @@
 export interface SubsetConfig {
-	schemaDumpFilePath: string;
+	schemaDumpFile: string;
 	connectionString: {
 		sourceDb: string;
 		destinationDb: string;

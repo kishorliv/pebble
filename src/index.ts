@@ -7,7 +7,7 @@ import { createSubset } from './subset/create-subset';
 async function main() {
 	try {
 		const config: SubsetConfig = {
-			schemaDumpFilePath: './dump/dump.sql',
+			schemaDumpFile: 'database_schema.sql',
 			connectionString: {
 				sourceDb: 'postgresql://localhost:5432/dvdrental',
 				destinationDb: 'postgresql://localhost:5432/test_db',
@@ -18,7 +18,7 @@ async function main() {
 
 		const sourceDb = createDbInstance(config.connectionString.sourceDb);
 
-		await createTablesWithSchema(config.connectionString.sourceDb, config.schemaDumpFilePath);
+		await createTablesWithSchema(config.connectionString.sourceDb, config.schemaDumpFile);
 
 		const subset = await createSubset(config, sourceDb);
 
