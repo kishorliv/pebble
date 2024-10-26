@@ -2,22 +2,28 @@ import { SubsetConfig } from './config/subset-config';
 import { createDbInstance } from './db/create-db-instance';
 import { createSubset } from './subset/create-subset';
 
+// usage example
 async function main() {
 	try {
 		const config: SubsetConfig = {
 			connectionString: {
-				sourceDb: process.env.SOURCE_DB_URL || '',
-				destinationDb: process.env.DESTINATION_DB_URL || '',
+				sourceDb: 'postgresql://localhost:5432/dvdrental',
+				destinationDb: 'postgresql://localhost:5432/test_db',
 			},
-			seedTables: [{ name: 'User' }],
+			seedTables: [{ name: 'actor' }],
 			percent: 5,
 		};
 
 		const sourceDb = createDbInstance(config.connectionString.sourceDb);
 
-		await createSubset(config, sourceDb);
+		console.log('Creating the subset...');
+
+		const subset = await createSubset(config, sourceDb);
+
+		console.log({ subset });
+		console.log('Done');
 	} catch (e) {
-		console.error('Something went wrong! Error details: ', e);
+		console.error('Something went wrong! ', e);
 	}
 }
 
