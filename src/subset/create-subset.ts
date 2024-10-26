@@ -8,6 +8,8 @@ export async function createSubset(
 	config: SubsetConfig,
 	sourceDb: Pool
 ): Promise<CreateSubsetResult> {
+	console.log('Creating the subset...');
+
 	const result: CreateSubsetResult = {};
 	const allTables = await getAllTables(sourceDb);
 
@@ -53,6 +55,8 @@ export async function createSubset(
 
 		await fetchRelatedDataRecursively(table, result, data.rows, sourceDb);
 	}
+
+	console.log('Done');
 
 	return result;
 }
