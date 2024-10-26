@@ -1,5 +1,8 @@
 export interface SubsetConfig {
-	connectionString: string;
+	connectionString: {
+		sourceDb: string;
+		destinationDb: string;
+	};
 	seedTables: SeedTable[];
 	percent: number;
 }

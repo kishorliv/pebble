@@ -5,12 +5,15 @@ import { createSubset } from './subset/create-subset';
 async function main() {
 	try {
 		const config: SubsetConfig = {
-			connectionString: process.env.DB_URL || '',
+			connectionString: {
+				sourceDb: process.env.SOURCE_DB_URL || '',
+				destinationDb: process.env.DESTINATION_DB_URL || '',
+			},
 			seedTables: [{ name: 'User' }],
 			percent: 5,
 		};
 
-		const sourceDb = createDbInstance(config.connectionString);
+		const sourceDb = createDbInstance(config.connectionString.sourceDb);
 
 		await createSubset(config, sourceDb);
 	} catch (e) {
