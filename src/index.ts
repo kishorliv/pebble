@@ -1,7 +1,6 @@
 import { SubsetConfig } from './config/subset-config';
 import { createDbInstance } from './db/create-db-instance';
-import { createTablesWithSchema } from './db/create-tables-with-schema';
-import { createSubset } from './subset/create-subset';
+import { createSubsetFromSortedGraph } from './subset/create-subset';
 import { buildDependencyGraph } from './subset/graph/build-dependency-graph';
 import { topologicalSort } from './subset/sort/topological-sort';
 
@@ -14,20 +13,21 @@ async function main() {
 				sourceDb: 'postgresql://localhost:5432/dvdrental',
 				targetDb: 'postgresql://localhost:5432/test_db',
 			},
-			seedTables: [{ name: 'actor' }],
 			percent: 5,
 		};
 
 		const sourceDb = createDbInstance(config.connectionString.sourceDb);
-
 		const graph = await buildDependencyGraph(sourceDb);
+		const sortedTables = topologicalSort(graph);
 
-		const sortedGraph = topologicalSort(graph);
-		console.log('Topological Sort:', sortedGraph);
+		if (!sortedTables) {
+			console.error('Could not sort the graph. Exiting...');
+			return;
+		}
 
-		// const subset = await createSubset(config, sourceDb);
+		const subset = await createSubsetFromSortedGraph(config, sortedTables, sourceDb);
 
-		// console.log({ subset });
+		console.log({ subset });
 	} catch (e) {
 		console.error('Something went wrong! ', e);
 	}

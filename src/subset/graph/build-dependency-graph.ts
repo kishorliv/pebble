@@ -2,7 +2,9 @@ import { Pool } from 'pg';
 import { getAllTables } from '../../db/get-all-tables';
 import { getForeignKeyConstraints } from '../../db/get-foreign-key-constraints';
 
-export async function buildDependencyGraph(sourceDb: Pool): Promise<Record<string, string[]>> {
+export type Graph = Record<string, string[]>;
+
+export async function buildDependencyGraph(sourceDb: Pool): Promise<Graph> {
 	const graph: Record<string, string[]> = {};
 
 	const tables = await getAllTables(sourceDb);

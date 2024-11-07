@@ -4,7 +4,6 @@ export interface SubsetConfig {
 		sourceDb: string;
 		targetDb: string;
 	};
-	seedTables: SeedTable[];
 	percent: number;
 }
 
