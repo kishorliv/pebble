@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 
-interface ForeignKeyConstraint {
+export interface ForeignKeyConstraint {
 	column: string;
 	relatedTable: string;
 	relatedColumn: string;
